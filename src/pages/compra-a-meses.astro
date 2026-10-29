@@ -1,0 +1,359 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Nav from '../components/Nav.astro'
+
+import projects from '../../data/projects.json'
+
+const whatsappMessage = 'Hola, quiero información para comprar mi m² a meses.'
+const whatsappUrl = `https://wa.me/525561667767?text=${encodeURIComponent(whatsappMessage)}`
+
+const formatMoney = (value: number) => `$${Math.round(value).toLocaleString('es-MX')}`
+
+// Ejemplo ilustrativo: precio congelado vs. precio con un año de plusvalía estimada
+const example = projects.find(project => project.title.includes('Del Valle')) ?? projects[0]
+const exampleFuturePrice = example.price * (1 + example.appreciation / 100)
+const exampleGain = exampleFuturePrice - example.price
+
+const steps = [
+  {
+    title: 'Elige tu desarrollo y abre tu campaña',
+    description: 'Un asesor abre una campaña personal para el desarrollo que elijas. El precio del m² queda congelado el día que la abres.'
+  },
+  {
+    title: 'Deposita a tu ritmo durante 12 meses',
+    description: 'Aporta cuando quieras y lo que quieras. Te recomendamos hacer depósitos mensuales para completar tu metro a tiempo.'
+  },
+  {
+    title: 'Recibe tu m²',
+    description: 'Al completar el valor de tu metro, se te asigna a tu nombre y desde ese momento empiezas a recibir rentas.'
+  }
+]
+
+const benefits = [
+  {
+    icon: 'fa-solid fa-calendar-days',
+    title: 'Pagos pequeños, mismo metro',
+    description: 'Divide el costo de tu m² en aportaciones que caben en tu presupuesto, sin enganche ni créditos.'
+  },
+  {
+    icon: 'fa-solid fa-lock',
+    title: 'Precio congelado',
+    description: 'Los precios de los desarrollos se actualizan cada 6 meses. Con tu campaña pagas el precio del día en que la abriste.'
+  },
+  {
+    icon: 'fa-solid fa-arrow-trend-up',
+    title: 'Plusvalía desde el primer día',
+    description: 'Si el m² sube mientras completas tus pagos, tu metro ya vale más de lo que pagaste por él.'
+  },
+  {
+    icon: 'fa-solid fa-shield-halved',
+    title: 'Tu dinero siempre es tuyo',
+    description: 'Si no completas tu metro en 12 meses, te regresamos tu dinero sin penalizaciones; solo se cobra una pequeña comisión por retiro.'
+  }
+]
+
+const faqs = [
+  {
+    question: '¿Qué pasa si no completo el pago de mi m² en 12 meses?',
+    answer: 'Te regresamos el dinero que depositaste, sin penalizaciones. Solo se cobra una pequeña comisión por el retiro.'
+  },
+  {
+    question: '¿Desde cuándo queda congelado el precio?',
+    answer: 'Desde el día en que abres tu campaña. Aunque el precio del desarrollo se actualice mientras completas tus pagos, tú pagas el precio con el que abriste.'
+  },
+  {
+    question: '¿Recibo rentas mientras completo mis pagos?',
+    answer: 'Las rentas comienzan cuando completas el valor de tu m² y se te asigna. A partir de ese momento recibes rentas como cualquier propietario de Sumametros.'
+  },
+  {
+    question: '¿Puedo comprar más de un m² a meses?',
+    answer: 'Sí. Puedes abrir tu campaña por el número de m² que quieras; tu asesor te ayudará a definir la meta y el plazo.'
+  },
+  {
+    question: '¿En qué desarrollos puedo comprar a meses?',
+    answer: 'En todos los desarrollos disponibles de Sumametros: Be Grand Reforma, Vitant Del Valle, Vitant Santa Fe, Vitant San Pedro y Vitant Santa Lucía.'
+  },
+  {
+    question: '¿Cómo abro mi campaña?',
+    answer: 'Escríbenos por WhatsApp. Un asesor de Be Grand te explica el proceso, te ayuda a elegir tu desarrollo y abre tu campaña.'
+  }
+]
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer }
+  }))
+}
+---
+
+<Layout
+  title="Compra tu m² a meses | Sumametros®"
+  description="Congela hoy el precio de tu m² en desarrollos Be Grand y págalo en hasta 12 meses, a tu ritmo. Si el precio sube mientras pagas, la plusvalía es tuya."
+  noindex
+>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <Nav />
+
+  <!-- Barra CTA fija: aparece al pasar el hero y se oculta en el CTA final -->
+  <div id="sticky-cta" class="fixed bottom-0 inset-x-0 z-20 bg-blue text-white shadow-2xl py-3 translate-y-full transition-transform duration-300" aria-hidden="true">
+    <div class="container">
+      <div class="flex items-center justify-between gap-4">
+        <p class="font-bold text-balance">Congela hoy el precio de tu m²</p>
+        <a class="button bg-green-600 flex items-center gap-2 shrink-0 text-sm" href={whatsappUrl} target="_blank" rel="noopener noreferrer" tabindex="-1">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Hablar con un asesor</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="py-16 relative" id="hero">
+    <div class="container">
+      <div class="flex flex-col items-center gap-8 max-w-2xl mx-auto text-center bg-white z-10 relative p-4 md:p-8 rounded-xl">
+        <p class="font-bold text-blue">Compra a meses</p>
+        <h1 class="text-xl md:text-3xl font-bold text-balance">Congela hoy el precio de tu m² y págalo en hasta 12 meses.</h1>
+        <p class="text-balance leading-relaxed">Abre tu campaña en el desarrollo que elijas, deposita cuando quieras y lo que quieras, y recibe tu metro al completar su valor. Si el precio sube mientras pagas, esa plusvalía es tuya.</p>
+        <a class="button bg-green-600 flex items-center gap-2" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Hablar con un asesor</span>
+        </a>
+        <ul class="flex flex-wrap items-center justify-center gap-2 text-xs md:text-sm">
+          <li class="bg-gray px-3 py-1 rounded-full">Sin enganche</li>
+          <li class="bg-gray px-3 py-1 rounded-full">Precio congelado</li>
+          <li class="bg-gray px-3 py-1 rounded-full">Sin intereses</li>
+        </ul>
+
+        <a class="flex items-center gap-2 text-xs md:text-sm underline" href="#quienes">
+          <p>Operado por</p>
+          <img src="/logo-begrand-horizontal.png" alt="Be Grand" class="h-4 md:h-6" />
+          <p>a través de</p>
+          <img src="/logo-briq.svg" alt="briq.mx" class="h-4 md:h-6" />
+        </a>
+      </div>
+    </div>
+
+    <img src="/piece-1.svg" alt="" class="absolute top-2 left-2 opacity-0 md:opacity-100 pointer-events-none" />
+    <img src="/piece-2.svg" alt="" class="absolute top-2 right-2 opacity-0 md:opacity-100 pointer-events-none" />
+    <img src="/piece-3.svg" alt="" class="absolute bottom-2 left-2 opacity-0 md:opacity-100 pointer-events-none" />
+    <img src="/piece-4.svg" alt="" class="absolute bottom-2 right-2 opacity-0 md:opacity-100 pointer-events-none" />
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="py-16 border-t border-b border-black/10" id="como-funciona">
+    <div class="container">
+      <div class="md:max-w-[50%] w-full text-balance mb-8">
+        <h2 class="font-bold text-blue">¿Cómo funciona?</h2>
+        <p class="text-2xl font-bold">Tu m² en tres pasos, a tu propio ritmo</p>
+      </div>
+
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {steps.map((step, index) => (
+          <li class="bg-gray p-8 rounded-xl flex flex-col gap-4">
+            <p class="text-blue text-xl md:text-2xl font-semibold">{String(index + 1).padStart(2, '0')}</p>
+            <h3 class="font-bold text-xl text-balance">{step.title}</h3>
+            <p class="leading-relaxed text-pretty">{step.description}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Beneficios -->
+  <section class="py-16" id="beneficios">
+    <div class="container">
+      <div class="md:max-w-[50%] w-full text-balance mb-8">
+        <h2 class="font-bold text-blue">Beneficios</h2>
+        <p class="text-2xl font-bold">Paga en partes, gana como si hubieras pagado todo hoy</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {benefits.map(benefit => (
+          <article class="border border-black/10 p-8 rounded-xl flex flex-col gap-4 items-start">
+            <span class="bg-blue text-white size-12 rounded-full flex items-center justify-center">
+              <i class={benefit.icon}></i>
+            </span>
+            <h3 class="font-bold text-xl">{benefit.title}</h3>
+            <p class="leading-relaxed text-pretty">{benefit.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Ejemplo -->
+  <section class="py-16">
+    <div class="container">
+      <div class="bg-blue text-white p-8 md:p-16 rounded-xl relative overflow-hidden">
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div class="flex flex-col gap-4">
+            <h2 class="font-bold">Ejemplo</h2>
+            <p class="text-2xl font-bold text-balance">Así funciona congelar el precio de tu m²</p>
+            <p class="leading-relaxed text-pretty">Abres tu campaña en {example.title} con el precio de hoy y lo completas en 12 meses. Si en ese tiempo el m² sube {example.appreciation}%, tu metro vale más de lo que pagaste.</p>
+          </div>
+          <dl class="bg-white text-black rounded-xl divide-y divide-black/10">
+            <div class="p-4 md:p-6 flex items-center justify-between gap-4">
+              <dt>Precio congelado del m²</dt>
+              <dd class="font-bold text-lg">{formatMoney(example.price)}</dd>
+            </div>
+            <div class="p-4 md:p-6 flex items-center justify-between gap-4">
+              <dt>Depósito mensual sugerido</dt>
+              <dd class="font-bold text-lg">{formatMoney(example.price / 12)}</dd>
+            </div>
+            <div class="p-4 md:p-6 flex items-center justify-between gap-4">
+              <dt>Valor estimado en 12 meses</dt>
+              <dd class="font-bold text-lg">{formatMoney(exampleFuturePrice)}</dd>
+            </div>
+            <div class="p-4 md:p-6 flex items-center justify-between gap-4 bg-gray rounded-b-xl">
+              <dt class="font-bold">Tu plusvalía estimada</dt>
+              <dd class="font-bold text-lg text-blue">+{formatMoney(exampleGain)}</dd>
+            </div>
+          </dl>
+        </div>
+        <p class="relative z-10 text-xs opacity-80 mt-6">Ejemplo ilustrativo. La plusvalía es una estimación basada en el histórico del desarrollo y no está garantizada.</p>
+        <img loading="lazy" decoding="async" src="/cta-piece-top.svg" alt="" class="absolute top-2 left-2 opacity-0 md:opacity-10 pointer-events-none" />
+        <img loading="lazy" decoding="async" src="/cta-piece-bottom.svg" alt="" class="absolute bottom-2 right-2 opacity-0 md:opacity-10 pointer-events-none" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Desarrollos -->
+  <section class="py-16" id="propiedades">
+    <div class="container">
+      <div class="md:max-w-[50%] w-full text-balance mb-8">
+        <h2 class="font-bold text-blue">Desarrollos disponibles</h2>
+        <p class="text-2xl font-bold">Elige dónde abrir tu campaña</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        {projects.map(project => (
+          <article class="flex flex-col gap-2 items-start">
+            <figure class="aspect-[4/3] relative rounded-xl overflow-hidden w-full">
+              <img loading="lazy" decoding="async" src={project.image} alt={project.title} class="object-cover w-full h-full absolute inset-0" />
+              <div class="absolute inset-0 rounded-xl border border-black/20"></div>
+            </figure>
+            <div>
+              <h3 class="font-bold">{project.title}</h3>
+              <p class="text-sm">{project.location}</p>
+            </div>
+            <p class="font-bold">{formatMoney(project.price)} mxn/m²</p>
+            <p class="text-sm">≈ {formatMoney(project.price / 12)} al mes por 12 meses</p>
+            <a href={project.url} class="button" target="_blank" rel="noopener noreferrer">Ver detalles</a>
+          </article>
+        ))}
+      </div>
+      <p class="text-xs mt-6 opacity-70">Precios vigentes al día de hoy. Se actualizan cada 6 meses.</p>
+    </div>
+  </section>
+
+  <!-- Confianza -->
+  <section class="py-16">
+    <div class="container">
+      <div class="bg-gray p-10 md:p-16 rounded-xl flex flex-col gap-4 text-center">
+        <div class="md:max-w-[100%] lg:max-w-[60%] w-full mx-auto text-pretty flex flex-col gap-4">
+          <div class="flex items-center gap-8 md:gap-16 justify-center flex-wrap w-full">
+            <img loading="lazy" decoding="async" src="/cnbv.jpg" alt="Comisión Nacional Bancaria y de Valores (CNBV)" class="h-12 md:h-24 mix-blend-multiply" />
+            <img loading="lazy" decoding="async" src="/shcp.svg" alt="Secretaría de Hacienda y Crédito Público (SHCP)" class="h-5 md:h-12 mix-blend-multiply" />
+            <img loading="lazy" decoding="async" src="/banco-mexico.svg" alt="Banco de México" class="h-4 md:h-12 mix-blend-multiply" />
+            <img loading="lazy" decoding="async" src="/condusef.jpg" alt="CONDUSEF" class="h-8 md:h-12 mix-blend-multiply" />
+          </div>
+          <h3 class="font-bold text-2xl">Sumametros es una opción segura y confiable</h3>
+          <p>Tu compra en Sumametros se realiza a través de briq.mx, plataforma regulada por la Comisión Nacional Bancaria y de Valores (CNBV), lo que garantiza la legalidad de tu inversión.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preguntas frecuentes -->
+  <section class="py-16" id="preguntas-frecuentes">
+    <div class="container">
+      <div class="md:max-w-[50%] w-full text-balance mb-8">
+        <h2 class="font-bold text-blue">Preguntas frecuentes</h2>
+        <p class="text-2xl font-bold">Resuelve tus dudas sobre la compra a meses</p>
+      </div>
+      <article class="flex flex-col gap-2 p-8 rounded-xl bg-gray mb-8" id="quienes">
+        <h3 class="font-bold">¿Quiénes administran Sumametros by Be Grand®?</h3>
+        <p class="leading-relaxed">Sumametros es un proyecto operado por Be Grand<sup>®</sup> con la tecnología y respaldo de briq.mx.</p>
+      </article>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {faqs.map(faq => (
+          <article class="flex flex-col gap-2 p-8 rounded-xl bg-gray">
+            <h3 class="font-bold">{faq.question}</h3>
+            <p class="leading-relaxed">{faq.answer}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="py-16" id="contacto">
+    <div class="container">
+      <div class="bg-navy text-white p-10 md:p-16 rounded-xl flex flex-col items-center gap-6 text-center relative overflow-hidden">
+        <div class="relative z-10 flex flex-col items-center gap-6 max-w-2xl">
+          <h2 class="text-2xl md:text-3xl font-bold text-balance">Congela el precio de tu m² antes de la próxima actualización</h2>
+          <p class="leading-relaxed text-pretty">Un asesor de Be Grand te ayuda a elegir tu desarrollo y abrir tu campaña por WhatsApp.</p>
+          <a class="button bg-green-600 flex items-center gap-2" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>Hablar por WhatsApp</span>
+          </a>
+          <p class="text-xs opacity-70">Aplican términos y condiciones. El equipo de Be Grand te compartirá los detalles al abrir tu campaña.</p>
+        </div>
+        <img loading="lazy" decoding="async" src="/cta-piece-top.svg" alt="" class="absolute top-2 left-2 opacity-0 md:opacity-10 pointer-events-none" />
+        <img loading="lazy" decoding="async" src="/cta-piece-bottom.svg" alt="" class="absolute bottom-2 right-2 opacity-0 md:opacity-10 pointer-events-none" />
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-16 rounded-t-3xl bg-gray flex flex-col gap-8">
+    <div class="container">
+      <div class="flex items-center justify-between flex-col md:flex-row gap-4">
+        <img loading="lazy" decoding="async" src="/logo-nav.png" alt="Sumametros" class="h-12" />
+        <div class="flex items-center gap-2">
+          <a href="tel:8004793103" class="bg-blue text-white px-4 py-2 rounded-full flex items-center gap-2 font-bold">
+            <i class="fa-solid fa-phone text-xs mt-1"></i>
+            <span>800 479 3103</span>
+          </a>
+          <a href="https://www.instagram.com/sumametros.mx" target="_blank" class="bg-blue text-white px-4 py-2 rounded-full flex items-center gap-2 font-bold">
+            <i class="fa-brands fa-instagram text-xs mt-1"></i>
+            <span>@sumametros.mx</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <p class="text-sm text-center">Be Grand, Sumametros y briq.mx son marcas registradas. Todos los derechos son reservados.</p>
+    </div>
+  </footer>
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('sticky-cta')
+    const hero = document.getElementById('hero')
+    const finalCta = document.getElementById('contacto')
+    if (!bar || !hero || !finalCta) return
+
+    const visible = { hero: true, finalCta: false }
+    const update = () => {
+      const show = !visible.hero && !visible.finalCta
+      bar.classList.toggle('translate-y-full', !show)
+      bar.setAttribute('aria-hidden', String(!show))
+      bar.querySelector('a').tabIndex = show ? 0 : -1
+    }
+
+    new IntersectionObserver(entries => {
+      visible.hero = entries[0].isIntersecting
+      update()
+    }).observe(hero)
+    new IntersectionObserver(entries => {
+      visible.finalCta = entries[0].isIntersecting
+      update()
+    }).observe(finalCta)
+  })
+</script>
